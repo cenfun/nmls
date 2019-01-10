@@ -1,0 +1,28 @@
+{
+  "name": "nmls",
+  "version": "1.0.0",
+  "description": "An analysis tool to Node Modules List",
+  "keywords": [
+    "nmls"
+  ],
+  "bin": {
+    "nmls": "bin.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cenfun/nmls.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cenfun/nmls/issues"
+  },
+  "homepage": "https://github.com/cenfun/nmls#readme",
+  "dependencies": {
+    "shelljs": "^0.8.3"
+  }
+}
