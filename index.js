@@ -30,7 +30,7 @@ class NMLS {
 
     }
 
-    readNodeModules() {
+    async readNodeModules() {
 
         var modulePath = "./node_modules";
         if (!fs.existsSync(modulePath)) {
@@ -38,18 +38,40 @@ class NMLS {
             return;
         }
 
-        this.moduleInfo = {};
+        var moduleInfo = await this.generateInfo(modulePath);
 
-        var list = fs.readdirSync(modulePath);
-        list.forEach((moduleName) => {
-            var info = fs.lstatSync(modulePath + "/" + moduleName);
+        console.log(moduleInfo);
+
+    }
+
+    async generateInfo(modulePath) {
+
+        var moduleInfo = {
+            depth: 1,
+            folderNumber: 1,
+            fileNumber: 0,
+            size: 0,
+
+        };
+
+        var list = await fs.readdir(modulePath);
+        for (let subName of list) {
+            var subPath = modulePath + "/" + subName;
+            var info = await fs.stat(subPath);
             if (info.isDirectory()) {
-                this.moduleInfo[moduleName] = info;
+                var subInfo = await this.generateInfo(subPath);
+                moduleInfo.depth += subInfo.depth;
+                moduleInfo.folderNumber += subInfo.folderNumber;
+                moduleInfo.fileNumber += subInfo.fileNumber;
+                moduleInfo.size += subInfo.size;
+            } else {
+                moduleInfo.size += info.size;
+                moduleInfo.fileNumber += 1;
             }
-        });
 
-        console.log(this.moduleInfo);
+        }
 
+        return moduleInfo;
 
     }
 
