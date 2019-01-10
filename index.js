@@ -1,5 +1,7 @@
 var fs = require("fs");
+var fsPromises = require('fs').promises;
 var shelljs = require("shelljs");
+var numeral = require("numeral");
 
 class NMLS {
 
@@ -38,7 +40,12 @@ class NMLS {
             return;
         }
 
+        console.log("start to generate info ....");
+
         var moduleInfo = await this.generateInfo(modulePath);
+
+
+        moduleInfo.sizeText = numeral(moduleInfo.size).format("0,0");
 
         console.log(moduleInfo);
 
@@ -50,14 +57,13 @@ class NMLS {
             depth: 1,
             folderNumber: 1,
             fileNumber: 0,
-            size: 0,
-
+            size: 0
         };
 
-        var list = await fs.readdir(modulePath);
+        var list = await fsPromises.readdir(modulePath);
         for (let subName of list) {
             var subPath = modulePath + "/" + subName;
-            var info = await fs.stat(subPath);
+            var info = await fsPromises.stat(subPath);
             if (info.isDirectory()) {
                 var subInfo = await this.generateInfo(subPath);
                 moduleInfo.depth += subInfo.depth;
