@@ -22,10 +22,5 @@
     "url": "https://github.com/cenfun/nmls/issues"
   },
   "homepage": "https://github.com/cenfun/nmls#readme",
-  "dependencies": {
-    "cli-color": "^1.4.0",
-    "json5": "^2.1.0",
-    "numeral": "^2.0.6",
-    "shelljs": "^0.8.3"
-  }
+  "dependencies": {}
 }

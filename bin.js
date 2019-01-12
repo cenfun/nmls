@@ -9,4 +9,11 @@ if (vs[0] < 8) {
 
 var NMLS = require("./index.js");
 
-new NMLS();
+var path = ".";
+var nmls = new NMLS(path);
+
+nmls.start().then(() => {
+
+    console.log("[nmls] done");
+
+});

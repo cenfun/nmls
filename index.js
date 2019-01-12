@@ -1,24 +1,18 @@
 var fs = require("fs");
 var path = require("path");
-//var shelljs = require("shelljs");
-var numeral = require("numeral");
-var JSON5 = require('json5');
-var clc = require("cli-color");
+var child_process = require('child_process');
 
 class NMLS {
 
-    constructor() {
-        this.root = ".";
-        console.log("execute path: " + this.root);
-
-        this.init();
-
+    constructor(root) {
+        this.root = root || ".";
+        console.log("[nmls] root: " + this.root);
     }
 
-    async init() {
+    async start() {
 
         if (!this.hasPackageJson(this.root)) {
-            console.log("ERROR: Not found package.json");
+            console.log("[nmls] ERROR: Not found package.json");
             return;
         }
 
@@ -31,91 +25,48 @@ class NMLS {
     async readNodeModules() {
 
         if (!this.hasNodeModules(this.root)) {
-            console.log("ERROR: Not found node_modules, try npm install first.");
+            console.log("[nmls] ERROR: Not found node_modules, try npm install first.");
             return;
         }
 
-        this.moduleList = {};
+        console.log("[nmls] generate module list ...");
 
-        console.log("generate module info ....");
+        var projectName = this.packageJson.name;
+        var projectPath = this.root;
 
-        var folderPath = this.root;
-        var folderName = this.packageJson.name;
-        var moduleInfo = await this.generateInfo(folderPath, folderName);
-        moduleInfo.sizeText = numeral(moduleInfo.size).format("0.00b");
-
-        this.hideTips();
-
-        console.log(moduleInfo);
-
-        console.log(Object.keys(this.moduleList));
-
-        await this.readDependencies();
-
-    }
-
-    isModuleRoot(folderPath, folderName) {
-        if (folderName === this.packageJson.name) {
-            return true;
-        }
-
-        if (this.hasPackageJson(folderPath)) {
-            //filter server folder
-            var pPath = path.resolve(folderPath, "../");
-            var ppPath = path.resolve(pPath, "../");
-            var ppName = path.relative(ppPath, pPath);
-            if (ppName === "node_modules") {
-                return true;
-            } else if (ppName.indexOf("@") === 0) {
-                //@folder
-                var pppPath = path.resolve(ppPath, "../");
-                var pppName = path.relative(pppPath, ppPath);
-                if (pppName === "node_modules") {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    initModuleInfo(moduleName, moduleInfo) {
-        this.showTips("reading module: " + moduleName);
-
-        var modulePath = moduleInfo.folderPath;
-        var config = this.readJSON(modulePath + "/package.json");
-        var moduleVersion = config.version;
-        moduleInfo.version = moduleVersion;
-
-        var existsModule = this.moduleList[moduleName];
-        if (existsModule) {
-            if (existsModule[moduleVersion]) {
-                this.log(clc.green("existing version: " + moduleName + "@" + moduleVersion));
-                this.log(existsModule[moduleVersion].folderPath + " => " + moduleInfo.folderPath);
-            } else {
-                existsModule[moduleVersion] = moduleInfo;
-            }
-        } else {
-            var newModule = {};
-            newModule[moduleVersion] = moduleInfo;
-            this.moduleList[moduleName] = newModule;
-        }
-    }
-
-    async generateInfo(folderPath, folderName) {
-
-        var folderInfo = {
-            folderName: folderName,
-            folderPath: folderPath,
-            folderNumber: 1,
+        this.projectInfo = {
+            path: projectPath,
+            name: projectName,
+            version: this.packageJson.version,
             fileNumber: 0,
             size: 0
         };
+        this.moduleList = {};
 
-        var isModule = this.isModuleRoot(folderPath, folderName);
-        if (isModule) {
-            this.initModuleInfo(folderName, folderInfo);
-        }
+        //this.moduleList[projectName]
+
+        await this.generateModuleList(projectPath + "/node_modules");
+        this.hideTips();
+
+        //console.log(this.moduleList);
+
+        var tree = await this.getNpmList();
+
+        this.initDependencies(tree.dependencies);
+
+        //console.log(tree);
+
+        Object.keys(this.projectInfo).forEach((k) => {
+            console.log(" - " + k + ": " + this.projectInfo[k]);
+        });
+
+        this.drawModule(this.projectInfo);
+
+        this.drawDependencies(tree.dependencies);
+
+    }
+
+    async generateModuleList(folderPath, scope) {
 
         var list = await this.readdir(folderPath);
         for (let subName of list) {
@@ -125,41 +76,212 @@ class NMLS {
                 continue;
             }
             if (info.isDirectory()) {
-                var subInfo = await this.generateInfo(subPath, subName);
-                folderInfo.folderNumber += subInfo.folderNumber;
-                folderInfo.fileNumber += subInfo.fileNumber;
-                folderInfo.size += subInfo.size;
+
+                //@scope module
+                if (!scope && subName.indexOf("@") === 0) {
+                    await this.generateModuleList(subPath, subName);
+                } else {
+
+                    var subInfo = await this.generateFolderInfo(subPath);
+                    this.projectInfo.fileNumber += subInfo.fileNumber;
+                    this.projectInfo.size += subInfo.size;
+
+                    //cache module
+                    if (this.hasPackageJson(subPath)) {
+                        var moduleName = scope ? scope + "/" + subName : subName;
+                        subInfo.path = subPath;
+                        subInfo.name = moduleName;
+                        this.moduleList[moduleName] = subInfo;
+                        this.showTips("[nmls] reading module: " + moduleName);
+                    }
+
+                }
+
             } else {
-                folderInfo.size += info.size;
-                folderInfo.fileNumber += 1;
+
+                this.projectInfo.fileNumber += 1;
+                this.projectInfo.size += info.size;
             }
 
         }
 
-        return folderInfo;
-
     }
+
+    async generateFolderInfo(folderPath) {
+        var folderInfo = {
+            fileNumber: 0,
+            size: 0
+        };
+        var list = await this.readdir(folderPath);
+        for (let subName of list) {
+            var subPath = folderPath + "/" + subName;
+            var info = await this.stat(subPath);
+            if (!info) {
+                continue;
+            }
+            if (info.isDirectory()) {
+                var subInfo = await this.generateFolderInfo(subPath);
+                folderInfo.fileNumber += subInfo.fileNumber;
+                folderInfo.size += subInfo.size;
+            } else {
+                folderInfo.fileNumber += 1;
+                folderInfo.size += info.size;
+            }
+        }
+        return folderInfo;
+    }
+
 
     //========================================================================================
 
-    readDependencies() {
+    async getNpmList() {
 
-        // var sh = shelljs.exec("npm list --json", {
-        //     silent: true
-        // });
+        console.log(`exec: npm list --json ...`);
 
-        // if (sh.code) {
-        //     console.log(sh.stderr);
-        //     return;
-        // }
+        return new Promise((resolve) => {
 
-        // //console.log(sh.stdout);
+            child_process.exec('npm list --json', {
 
-        // this.json = JSON.parse(sh.stdout);
+                maxBuffer: 5000 * 1024
 
-        //console.log(this.json);
+            }, (error, stdout, stderr) => {
 
+                if (error) {
+                    //console.error(`exec "npm list --json" error: ${error}`);
+                }
 
+                var json = JSON.parse(stdout);
+
+                resolve(json);
+
+            });
+
+        });
+
+    }
+
+    initDependencies(dependencies) {
+
+        for (var name in dependencies) {
+            //console.log(name);
+            var info = this.moduleList[name];
+            if (info) {
+                var item = dependencies[name];
+                item.name = name;
+                //self folder size, without sub dependencies
+                item.path = info.path;
+                item.fileNumber = info.fileNumber;
+                item.size = info.size;
+                var cache = {};
+                //check sub dependencies
+                this.initSubDependencies(item, cache);
+
+            } else {
+                console.log("ERROR: Not found module info: " + name);
+            }
+
+        }
+
+    }
+
+    initSubDependencies(parent, cache) {
+
+        var dependencies = parent.dependencies;
+        if (!dependencies) {
+            return;
+        }
+
+        for (var name in dependencies) {
+
+            //find in node_modules first
+            var inPath = parent.path + "/node_modules/" + name;
+
+            if (fs.existsSync(inPath)) {
+                //console.log(name, inPath);
+                continue;
+            }
+
+            if (cache[name]) {
+                //console.log(name, "deduped");
+                continue;
+            }
+
+            //in flat path
+            var info = this.moduleList[name];
+            if (info) {
+                //check sub dependencies
+                var item = dependencies[name];
+                item.name = name;
+                //self folder size, without sub dependencies
+                item.path = info.path;
+                item.size = info.size;
+
+                cache[name] = true;
+
+                this.initSubDependencies(item, cache);
+
+                //add to parent
+                parent.size += item.size;
+
+            } else {
+                console.log("ERROR: Not found sub module info: " + name);
+            }
+
+        }
+
+    }
+
+    drawDependencies(dependencies) {
+
+        if (!dependencies) {
+            return;
+        }
+
+        for (var k in dependencies) {
+            var item = dependencies[k];
+            this.drawModule(item, "    ");
+
+        }
+
+    }
+
+    drawModule(m, space = "") {
+        var str = space + " |- ";
+        console.log(str + m.name + "@" + m.version + " (" + this.toBytes(m.size) + ")");
+    }
+
+    //30:'black', 31:'red', 32:'green', 33:'yellow', 34:'blue', 35:'magenta', 36:'cyan', 37:'white'
+    toBytes(bytes) {
+        var k = 1024;
+        if (bytes < k) {
+            return `${bytes}b`;
+        }
+
+        var m = k * k;
+        if (bytes < m) {
+            return `${Math.round(bytes / k * 100) / 100}Kb`;
+        }
+
+        var g = m * k;
+        if (bytes < g) {
+
+            var gStr = `${Math.round(bytes / m * 100) / 100}Mb`;
+            if (bytes < 10 * m) {
+                return `\x1b[32m${gStr}\x1b[39m`;
+            } else if (bytes < 100 * m) {
+                return `\x1b[33m${gStr}\x1b[39m`;
+            } else {
+                return `\x1b[31m${gStr}\x1b[39m`;
+            }
+
+        }
+
+        var t = g * k;
+        if (bytes < t) {
+            return `\x1b[35m${Math.round(bytes / g * 100) / 100}Gb\x1b[39m`;
+        }
+
+        return bytes;
 
     }
 
@@ -233,7 +355,7 @@ class NMLS {
         var content = this.readFileContent(filePath);
         var json = null;
         if (content) {
-            json = JSON5.parse(content);
+            json = JSON.parse(content);
         }
         return json;
     }
@@ -267,37 +389,6 @@ class NMLS {
             console.log(e);
         }
 
-        return str;
-    }
-
-    replace(str, obj, defaultValue) {
-        str = str + "";
-        if (!obj) {
-            return str;
-        }
-
-        str = str.replace(/\{([^}]+)\}/g, function (match, key) {
-
-            if (!obj.hasOwnProperty(key)) {
-                if (typeof (defaultValue) !== "undefined") {
-                    return defaultValue;
-                }
-                return match;
-            }
-
-            var val = obj[key];
-
-            if (typeof (val) === "function") {
-                val = val(obj, key);
-            }
-
-            if (typeof (val) === "undefined") {
-                val = "";
-            }
-
-            return val;
-
-        });
         return str;
     }
 
