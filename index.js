@@ -156,6 +156,8 @@ class NMLS {
 
     initDependencies(dependencies) {
 
+
+
         for (var name in dependencies) {
             //console.log(name);
             var info = this.moduleList[name];
@@ -169,6 +171,9 @@ class NMLS {
                 var cache = {};
                 //check sub dependencies
                 this.initSubDependencies(item, cache);
+
+                //console.log(Object.keys(this.moduleList).length);
+                //console.log(Object.keys(cache).length);
 
             } else {
                 console.log("ERROR: Not found module info: " + name);
@@ -187,41 +192,33 @@ class NMLS {
 
         for (var name in dependencies) {
 
-            //find in node_modules first
-            var inPath = parent.path + "/node_modules/" + name;
-
-            if (fs.existsSync(inPath)) {
-                //console.log(name, inPath);
-                continue;
-            }
-
-            if (cache[name]) {
-                //console.log(name, "deduped");
-                continue;
-            }
-
             //in flat path
             var info = this.moduleList[name];
-            if (info) {
-                //check sub dependencies
-                var item = dependencies[name];
-                item.name = name;
-                //self folder size, without sub dependencies
-                item.path = info.path;
+            if (!info) {
+                console.log("ERROR: Not found sub module info: " + name);
+                continue;
+            }
+
+            //check sub dependencies
+            var item = dependencies[name];
+            item.name = name;
+            //self folder size, without sub dependencies
+            item.path = info.path;
+
+            if (cache[name]) {
+                item.size = 0;
+                item.files = 0;
+            } else {
                 item.size = info.size;
                 item.files = info.files;
-
                 cache[name] = true;
-
-                this.initSubDependencies(item, cache);
-
-                //add to parent
-                parent.size += item.size;
-                parent.files += item.files;
-
-            } else {
-                console.log("ERROR: Not found sub module info: " + name);
             }
+
+            this.initSubDependencies(item, cache);
+
+            //add to parent
+            parent.size += item.size;
+            parent.files += item.files;
 
         }
 
@@ -413,6 +410,21 @@ class NMLS {
         }
 
         return str;
+    }
+
+    deleteFolder(path) {
+        if (fs.existsSync(path)) {
+            var files = fs.readdirSync(path);
+            files.forEach((file) => {
+                var curPath = path + "/" + file;
+                if (fs.statSync(curPath).isDirectory()) {
+                    this.deleteFolder(curPath);
+                } else {
+                    fs.unlinkSync(curPath);
+                }
+            });
+            fs.rmdirSync(path);
+        }
     }
 
     //========================================================================================
