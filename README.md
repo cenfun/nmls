@@ -1,5 +1,5 @@
 # nmls
-An analysis tool to Node Modules List
+An analysis tool to show dependencies detail in node modules folder.
 
 ![npm](https://img.shields.io/npm/v/nmls.svg)
 ![npm](https://img.shields.io/npm/dt/nmls.svg)
@@ -13,9 +13,7 @@ npm install nmls -g
 # Usage
 ```
 nmls
-
 ```
-
 # Example
 ```
 [nmls] root: .
