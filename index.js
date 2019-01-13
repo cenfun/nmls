@@ -56,10 +56,6 @@ class NMLS {
 
         //console.log(tree);
 
-        Object.keys(this.projectInfo).forEach((k) => {
-            console.log(" - " + k + ": " + this.projectInfo[k]);
-        });
-
         this.drawGrid(tree.dependencies);
 
     }
@@ -134,7 +130,7 @@ class NMLS {
 
     async getNpmList() {
 
-        console.log(`exec: npm list --json ...`);
+        console.log(`[nmls] exec: npm list --json ...`);
 
         return new Promise((resolve) => {
 
