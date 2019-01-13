@@ -22,5 +22,7 @@
     "url": "https://github.com/cenfun/nmls/issues"
   },
   "homepage": "https://github.com/cenfun/nmls#readme",
-  "dependencies": {}
+  "dependencies": {
+    "console-grid": "^1.0.0"
+  }
 }

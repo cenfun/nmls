@@ -13,7 +13,5 @@ var path = ".";
 var nmls = new NMLS(path);
 
 nmls.start().then(() => {
-
-    console.log("[nmls] done");
-
+    //console.log("[nmls] done");
 });

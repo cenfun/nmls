@@ -1,6 +1,6 @@
 var fs = require("fs");
-var path = require("path");
 var child_process = require('child_process');
+var Grid = require("console-grid");
 
 class NMLS {
 
@@ -38,7 +38,7 @@ class NMLS {
             path: projectPath,
             name: projectName,
             version: this.packageJson.version,
-            fileNumber: 0,
+            files: 0,
             size: 0
         };
         this.moduleList = {};
@@ -60,9 +60,7 @@ class NMLS {
             console.log(" - " + k + ": " + this.projectInfo[k]);
         });
 
-        this.drawModule(this.projectInfo);
-
-        this.drawDependencies(tree.dependencies);
+        this.drawGrid(tree.dependencies);
 
     }
 
@@ -83,7 +81,7 @@ class NMLS {
                 } else {
 
                     var subInfo = await this.generateFolderInfo(subPath);
-                    this.projectInfo.fileNumber += subInfo.fileNumber;
+                    this.projectInfo.files += subInfo.files;
                     this.projectInfo.size += subInfo.size;
 
                     //cache module
@@ -99,7 +97,7 @@ class NMLS {
 
             } else {
 
-                this.projectInfo.fileNumber += 1;
+                this.projectInfo.files += 1;
                 this.projectInfo.size += info.size;
             }
 
@@ -109,7 +107,7 @@ class NMLS {
 
     async generateFolderInfo(folderPath) {
         var folderInfo = {
-            fileNumber: 0,
+            files: 0,
             size: 0
         };
         var list = await this.readdir(folderPath);
@@ -121,10 +119,10 @@ class NMLS {
             }
             if (info.isDirectory()) {
                 var subInfo = await this.generateFolderInfo(subPath);
-                folderInfo.fileNumber += subInfo.fileNumber;
+                folderInfo.files += subInfo.files;
                 folderInfo.size += subInfo.size;
             } else {
-                folderInfo.fileNumber += 1;
+                folderInfo.files += 1;
                 folderInfo.size += info.size;
             }
         }
@@ -170,7 +168,7 @@ class NMLS {
                 item.name = name;
                 //self folder size, without sub dependencies
                 item.path = info.path;
-                item.fileNumber = info.fileNumber;
+                item.files = info.files;
                 item.size = info.size;
                 var cache = {};
                 //check sub dependencies
@@ -215,6 +213,7 @@ class NMLS {
                 //self folder size, without sub dependencies
                 item.path = info.path;
                 item.size = info.size;
+                item.files = info.files;
 
                 cache[name] = true;
 
@@ -222,6 +221,7 @@ class NMLS {
 
                 //add to parent
                 parent.size += item.size;
+                parent.files += item.files;
 
             } else {
                 console.log("ERROR: Not found sub module info: " + name);
@@ -231,23 +231,50 @@ class NMLS {
 
     }
 
-    drawDependencies(dependencies) {
+    drawGrid(dependencies) {
 
-        if (!dependencies) {
-            return;
+        var gridData = {
+            columns: [{
+                id: "name",
+                name: " Name",
+                color: "green",
+                formatter: (v, row) => {
+                    var str = " |- ";
+                    if (row.space) {
+                        str = row.space + str;
+                    }
+                    return str + v;
+                }
+            }, {
+                id: "version",
+                name: "Version"
+            }, {
+                id: "files",
+                name: "Files"
+            }, {
+                id: "size",
+                name: "Size"
+            }, {
+                id: "bytes",
+                name: "Bytes",
+                formatter: (v, row) => {
+                    return this.toBytes(row.size);
+                }
+            }],
+            rows: [this.projectInfo]
+        };
+
+        if (dependencies) {
+            for (var k in dependencies) {
+                var item = dependencies[k];
+                item.space = "   ";
+                gridData.rows.push(item);
+            }
         }
 
-        for (var k in dependencies) {
-            var item = dependencies[k];
-            this.drawModule(item, "    ");
+        var grid = new Grid();
+        grid.render(gridData);
 
-        }
-
-    }
-
-    drawModule(m, space = "") {
-        var str = space + " |- ";
-        console.log(str + m.name + "@" + m.version + " (" + this.toBytes(m.size) + ")");
     }
 
     //30:'black', 31:'red', 32:'green', 33:'yellow', 34:'blue', 35:'magenta', 36:'cyan', 37:'white'
