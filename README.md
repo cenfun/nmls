@@ -7,11 +7,22 @@ An analysis tool to show dependencies detail in node modules folder.
 
 # Install
 ```
-npm install nmls -g
+npm install nmls
 ```
 
 # Usage
 ```
+var NMLS = require("nmls");
+var path = ".";
+var nmls = new NMLS(path);
+nmls.start().then(() => {
+    console.log("[nmls] done");
+});
+```
+# Global Command Usage
+```
+npm install nmls -g
+#go to module folder and run:
 nmls
 ```
 # Example
