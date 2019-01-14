@@ -15,7 +15,10 @@ npm install nmls
 var NMLS = require("nmls");
 var path = ".";
 var nmls = new NMLS(path);
-nmls.start().then(() => {
+var option = {
+    sortby: "size"
+};
+nmls.start(option).then(() => {
     console.log("[nmls] done");
 });
 ```
@@ -24,6 +27,8 @@ nmls.start().then(() => {
 npm install nmls -g
 #go to module folder and run:
 nmls
+#sort by size
+nmls --sortby size
 ```
 # Example
 ```

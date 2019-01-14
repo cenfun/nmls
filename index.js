@@ -9,7 +9,9 @@ class NMLS {
         console.log("[nmls] path: " + this.root);
     }
 
-    async start() {
+    async start(option) {
+
+        this.option = option || {};
 
         if (!this.hasPackageJson(this.root)) {
             console.log("[nmls] ERROR: Not found package.json");
@@ -251,23 +253,57 @@ class NMLS {
                 formatter: (v, row) => {
                     return this.toBytes(v);
                 }
-            }],
-            rows: [this.projectInfo]
+            }]
         };
 
+        var rows = [];
         if (dependencies) {
             for (var k in dependencies) {
                 var item = dependencies[k];
                 item.space = "   ";
-                gridData.rows.push(item);
+                rows.push(item);
             }
         }
+        var sortField = this.getSortField(gridData.columns);
+        this.sortRows(rows, sortField);
+
+        gridData.rows = [this.projectInfo].concat(rows);
 
         var grid = new Grid();
         grid.render(gridData);
 
     }
 
+    getSortField(columns) {
+        var sortby = this.option.sortby || this.option.s;
+        if (!sortby) {
+            return "";
+        }
+
+        for (var i = 0, l = columns.length; i < l; i++) {
+            if (sortby === columns[i].id) {
+                return sortby;
+            }
+        }
+        return "";
+    }
+
+    sortRows(list, sortField) {
+        if (!sortField) {
+            return;
+        }
+
+        list.sort((a, b) => {
+            var au = a[sortField];
+            var bu = b[sortField];
+            if (au !== bu) {
+                return au > bu ? -1 : 1;
+            }
+            return 0;
+        });
+    }
+
+    //https://en.wikipedia.org/wiki/ANSI_escape_code
     //30:'black', 31:'red', 32:'green', 33:'yellow', 34:'blue', 35:'magenta', 36:'cyan', 37:'white'
     toBytes(bytes) {
         var k = 1024;
@@ -285,18 +321,18 @@ class NMLS {
 
             var gStr = `${Math.round(bytes / m * 100) / 100}Mb`;
             if (bytes < 10 * m) {
-                return `\x1b[32m${gStr}\x1b[39m`;
+                return `\x1b[32m${gStr}\x1b[0m`;
             } else if (bytes < 100 * m) {
-                return `\x1b[33m${gStr}\x1b[39m`;
+                return `\x1b[33m${gStr}\x1b[0m`;
             } else {
-                return `\x1b[31m${gStr}\x1b[39m`;
+                return `\x1b[31m${gStr}\x1b[0m`;
             }
 
         }
 
         var t = g * k;
         if (bytes < t) {
-            return `\x1b[35m${Math.round(bytes / g * 100) / 100}Gb\x1b[39m`;
+            return `\x1b[35m${Math.round(bytes / g * 100) / 100}Gb\x1b[0m`;
         }
 
         return bytes;
