@@ -6,7 +6,7 @@ class NMLS {
 
     constructor(root) {
         this.root = root || ".";
-        console.log("[nmls] root: " + this.root);
+        console.log("[nmls] path: " + this.root);
     }
 
     async start() {
@@ -230,7 +230,7 @@ class NMLS {
             columns: [{
                 id: "name",
                 name: " Name",
-                color: "green",
+                maxWidth: 60,
                 formatter: (v, row) => {
                     var str = " |- ";
                     if (row.space) {
@@ -240,18 +240,16 @@ class NMLS {
                 }
             }, {
                 id: "version",
-                name: "Version"
+                name: "Version",
+                maxWidth: 10
             }, {
                 id: "files",
                 name: "Files"
             }, {
                 id: "size",
-                name: "Size"
-            }, {
-                id: "bytes",
-                name: "Bytes",
+                name: "Size",
                 formatter: (v, row) => {
-                    return this.toBytes(row.size);
+                    return this.toBytes(v);
                 }
             }],
             rows: [this.projectInfo]
