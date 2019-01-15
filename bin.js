@@ -17,9 +17,13 @@ for (var i = 2, l = process.argv.length; i < l; i++) {
     var item = process.argv[i];
     if (item && item.indexOf("-") === 0) {
         var name = item.replace(/^-+/, "");
-        option[name] = process.argv[i + 1];
-        i++;
-
+        var value = process.argv[i + 1];
+        if (value && value.indexOf("-") !== 0) {
+            option[name] = value;
+            i++;
+        } else {
+            option[name] = true;
+        }
     }
 }
 //console.log(option);

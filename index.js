@@ -178,7 +178,7 @@ class NMLS {
                 //console.log(Object.keys(cache).length);
 
             } else {
-                console.log("ERROR: Not found module info: " + name);
+                console.log("[nmls] WARN: Not found module: " + name);
             }
 
         }
@@ -197,7 +197,7 @@ class NMLS {
             //in flat path
             var info = this.moduleList[name];
             if (!info) {
-                console.log("ERROR: Not found sub module info: " + name);
+                console.log("[nmls] WARN: Not found sub module: " + name);
                 continue;
             }
 
@@ -275,17 +275,16 @@ class NMLS {
     }
 
     getSortField(columns) {
-        var sortby = this.option.sortby || this.option.s;
-        if (!sortby) {
+        var sort = this.option.sort || this.option.s;
+        if (!sort) {
             return "";
         }
-
         for (var i = 0, l = columns.length; i < l; i++) {
-            if (sortby === columns[i].id) {
-                return sortby;
+            if (sort === columns[i].id) {
+                return sort;
             }
         }
-        return "";
+        return "size";
     }
 
     sortRows(list, sortField) {
