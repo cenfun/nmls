@@ -228,18 +228,21 @@ class NMLS {
 
     drawGrid(dependencies) {
 
+        var rows = [];
+        if (dependencies) {
+            for (var k in dependencies) {
+                var item = dependencies[k];
+                rows.push(item);
+            }
+        }
+
+        this.projectInfo.subs = rows;
+
         var gridData = {
             columns: [{
                 id: "name",
                 name: " Name",
-                maxWidth: 60,
-                formatter: (v, row) => {
-                    var str = " |- ";
-                    if (row.space) {
-                        str = row.space + str;
-                    }
-                    return str + v;
-                }
+                maxWidth: 60
             }, {
                 id: "version",
                 name: "Version",
@@ -253,23 +256,20 @@ class NMLS {
                 formatter: (v, row) => {
                     return this.toBytes(v);
                 }
-            }]
+            }],
+            rows: [this.projectInfo]
         };
 
-        var rows = [];
-        if (dependencies) {
-            for (var k in dependencies) {
-                var item = dependencies[k];
-                item.space = "   ";
-                rows.push(item);
-            }
-        }
         var sortField = this.getSortField(gridData.columns);
-        this.sortRows(rows, sortField);
+        var sortAsc = false;
+        if (this.option.asc) {
+            sortAsc = true;
+        }
 
-        gridData.rows = [this.projectInfo].concat(rows);
-
-        var grid = new Grid();
+        var grid = new Grid({
+            sortField: sortField,
+            sortAsc: sortAsc
+        });
         grid.render(gridData);
 
     }
@@ -287,55 +287,33 @@ class NMLS {
         return "size";
     }
 
-    sortRows(list, sortField) {
-        if (!sortField) {
-            return;
-        }
 
-        list.sort((a, b) => {
-            var au = a[sortField];
-            var bu = b[sortField];
-            if (au !== bu) {
-                return au > bu ? -1 : 1;
-            }
-            return 0;
-        });
-    }
-
-    //https://en.wikipedia.org/wiki/ANSI_escape_code
-    //30:'black', 31:'red', 32:'green', 33:'yellow', 34:'blue', 35:'magenta', 36:'cyan', 37:'white'
     toBytes(bytes) {
         var k = 1024;
         if (bytes < k) {
             return `${bytes}b`;
         }
-
         var m = k * k;
         if (bytes < m) {
             return `${Math.round(bytes / k * 100) / 100}Kb`;
         }
-
         var g = m * k;
         if (bytes < g) {
-
             var gStr = `${Math.round(bytes / m * 100) / 100}Mb`;
             if (bytes < 10 * m) {
-                return `\x1b[32m${gStr}\x1b[0m`;
+                return Grid.style.green(gStr);
             } else if (bytes < 100 * m) {
-                return `\x1b[33m${gStr}\x1b[0m`;
+                return Grid.style.yellow(gStr);
             } else {
-                return `\x1b[31m${gStr}\x1b[0m`;
+                return Grid.style.red(gStr);
             }
-
         }
-
         var t = g * k;
         if (bytes < t) {
-            return `\x1b[35m${Math.round(bytes / g * 100) / 100}Gb\x1b[0m`;
+            var tStr = `${Math.round(bytes / g * 100) / 100}Gb`;
+            return Grid.style.magenta(tStr);
         }
-
         return bytes;
-
     }
 
     //========================================================================================
