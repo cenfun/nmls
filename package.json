@@ -1,14 +1,14 @@
 {
   "name": "nmls",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "An analysis tool to Node Modules List",
   "keywords": [
     "nmls"
   ],
   "bin": {
-    "nmls": "bin.js"
+    "nmls": "./bin/nmls.js"
   },
-  "main": "index.js",
+  "main": "./lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
