@@ -16,7 +16,10 @@ var NMLS = require("nmls");
 var path = ".";
 var nmls = new NMLS(path);
 var option = {
-    sort: "dSize"
+    sort: "dSize",
+    asc: false,
+    external: "devDependencies",
+    module: ""
 };
 nmls.start(option).then(() => {
     console.log("[nmls] done");
@@ -40,13 +43,13 @@ nmls --module console-grid
 # Example
 ```
 [nmls] path: .
-[nmls] generate root info ...
-[nmls] generate module tree ...
+[nmls] generated root module: nmls
+[nmls] generated all node modules
 ┌ ────────────────── ┬ ─────── ┬ ──────── ┬ ────────── ┬ ────────── ┬ ────────── ┐
 │                    │         │   Module │     Module │ Dependency │ Dependency │
 │  Name              │ Version │    Files │       Size │      Files │       Size │
 ├ ────────────────── ┼ ─────── ┼ ──────── ┼ ────────── ┼ ────────── ┼ ────────── ┤
-│ └ nmls             │ 1.0.6   │        6 │    23.7 KB │        110 │  243.34 KB │
+│ └ nmls             │ 1.0.7   │        6 │    25.7 KB │        110 │  243.34 KB │
 │   └ dependencies   │         │          │            │            │            │
 │     ├ console-grid │ 1.0.9   │        8 │   29.67 KB │          0 │        0 B │
 │     ├ gauge        │ 2.7.4   │       19 │   47.83 KB │         51 │   74.59 KB │
