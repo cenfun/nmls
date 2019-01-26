@@ -25,21 +25,31 @@ nmls.start(option).then(() => {
 # Global Command Usage
 ```
 npm install nmls -g
+
 #go to module folder and run:
 nmls
+
 #sort by dependency size
+nmls -s dSize
 nmls --sort dSize
+
+#show module info
+nmls -m console-grid
+nmls --module console-grid
 ```
 # Example
 ```
 [nmls] path: .
-[nmls] generate module list ...
+[nmls] generate root info ...
+[nmls] generate module tree ...
 ┌ ────────────────── ┬ ─────── ┬ ──────── ┬ ────────── ┬ ────────── ┬ ────────── ┐
-│                    │         │   Module │ Dependency │     Module │ Dependency │
-│  Name              │ Version │    Files │      Files │       Size │       Size │
+│                    │         │   Module │     Module │ Dependency │ Dependency │
+│  Name              │ Version │    Files │       Size │      Files │       Size │
 ├ ────────────────── ┼ ─────── ┼ ──────── ┼ ────────── ┼ ────────── ┼ ────────── ┤
-│ |- nmls            │ 1.0.3   │        7 │         15 │   20.76 KB │   73.32 KB │
-│    |- console-grid │ 1.0.7   │        8 │          0 │   28.18 KB │        0 B │
-│    |- ignore       │ 5.0.4   │        7 │          0 │   45.14 KB │        0 B │
+│ └ nmls             │ 1.0.6   │        6 │    23.7 KB │        110 │  243.34 KB │
+│   └ dependencies   │         │          │            │            │            │
+│     ├ console-grid │ 1.0.9   │        8 │   29.67 KB │          0 │        0 B │
+│     ├ gauge        │ 2.7.4   │       19 │   47.83 KB │         51 │   74.59 KB │
+│     └ npm-packlist │ 1.2.0   │        4 │   11.87 KB │         28 │   79.39 KB │
 └ ────────────────── ┴ ─────── ┴ ──────── ┴ ────────── ┴ ────────── ┴ ────────── ┘
 ```
