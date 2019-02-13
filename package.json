@@ -1,6 +1,6 @@
 {
   "name": "nmls",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "An analysis tool to Node Modules List",
   "keywords": [
     "nmls"
