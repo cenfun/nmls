@@ -25,6 +25,6 @@
   "dependencies": {
     "console-grid": "^1.0.9",
     "gauge": "^2.7.4",
-    "npm-packlist": "^1.2.0"
+    "ignore": "^5.0.5"
   }
 }
