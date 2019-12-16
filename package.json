@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/cenfun/nmls#readme",
   "dependencies": {
-    "console-grid": "^1.0.11",
+    "console-grid": "^1.0.16",
     "gauge": "^2.7.4",
-    "ignore": "^5.1.1"
+    "ignore": "^5.1.4"
   }
 }
