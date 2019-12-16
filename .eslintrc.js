@@ -60,6 +60,9 @@ module.exports = {
         "max-len": ["error", 200],
         "max-nested-callbacks": ["error", 3],
 
+        "no-prototype-builtins": "off",
+        "require-atomic-updates": "off",
+
         "indent": ["error", 4, {
             "SwitchCase": 1,
             "ArrayExpression": "first",
