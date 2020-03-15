@@ -1,5 +1,4 @@
 const fs = require("fs");
-const os = require("os");
 const path = require("path");
 const ignore = require('ignore');
 const ConsoleGrid = require("console-grid");
@@ -68,9 +67,6 @@ class NMLS {
         output("[nmls] generated node modules");
 
         //console.log(this.projectInfo, Object.keys(nodeModules).length);
-
-        //TODO remove later
-        this.writeJSONSync(".temp/node_modules.json", nodeModules, true);
 
         await this.showInfo();
 
@@ -681,15 +677,6 @@ class NMLS {
         return content;
     }
 
-    writeFileContentSync(filePath, content, force) {
-        var isExists = fs.existsSync(filePath);
-        if (force || isExists) {
-            fs.writeFileSync(filePath, content);
-            return true;
-        }
-        return false;
-    }
-
     readJSON(filePath) {
         //do NOT use require, it has cache
         let content = this.readFileContent(filePath);
@@ -702,32 +689,6 @@ class NMLS {
             }
         }
         return json;
-    }
-
-    writeJSONSync(filePath, json, force) {
-        var content = JSON.stringify(json, null, 4);
-        if (!content) {
-            return false;
-        }
-        //end of line
-        var EOL = this.getEOL();
-        content = content.replace(/\r|\n/g, EOL);
-        content += EOL;
-        return this.writeFileContentSync(filePath, content, force);
-    }
-
-    getEOL(content) {
-        if (!content) {
-            return os.EOL;
-        }
-        var nIndex = content.lastIndexOf("\n");
-        if (nIndex === -1) {
-            return os.EOL;
-        }
-        if (content.substr(nIndex - 1, 1) === "\r") {
-            return "\r\n";
-        }
-        return "\n";
     }
 
     toList(v) {

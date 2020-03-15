@@ -18,7 +18,6 @@ var nmls = new NMLS(path);
 var option = {
     sort: "dSize",
     asc: false,
-    external: "devDependencies",
     module: ""
 };
 nmls.start(option).then(() => {
@@ -42,17 +41,17 @@ nmls --module console-grid
 ```
 # Example
 ```
-[nmls] path: .
-[nmls] generated root module: nmls
-[nmls] generated all node modules
-┌────────────────────┬─────────┬──────────┬────────────┬────────────┬────────────┐
-│                    │         │   Module │     Module │ Dependency │ Dependency │
-│  Name              │ Version │    Files │       Size │      Files │       Size │
-├────────────────────┼─────────┼──────────┼────────────┼────────────┼────────────┤
-│ └ nmls             │ 1.0.10  │        7 │   28.31 KB │         85 │  199.64 KB │
-│   └ dependencies   │         │          │            │            │            │
-│     ├ console-grid │ 1.0.10  │        8 │   31.06 KB │          0 │        0 B │
-│     ├ gauge        │ 2.7.4   │       19 │   47.83 KB │         51 │   74.59 KB │
-│     └ ignore       │ 5.1.1   │        7 │   46.17 KB │          0 │        0 B │
-└────────────────────┴─────────┴──────────┴────────────┴────────────┴────────────┘
+[nmls] path: C:/workspace/nmls
+[nmls] generated project: nmls
+[nmls] generated node modules
+┌────────────────────┬─────────┬──────────┬──────────────┬──────────────┐
+│                    │         │          │ Dependencies │ Dependencies │
+│  Name              │ Version │     Size │       Amount │         Size │
+├────────────────────┼─────────┼──────────┼──────────────┼──────────────┤
+│ └ nmls             │ 2.0.0   │ 26.81 KB │           15 │    200.13 KB │
+│   └ dependencies   │         │          │              │              │
+│     ├ console-grid │ 1.0.16  │ 31.03 KB │            0 │          0 B │
+│     ├ gauge        │ 2.7.4   │ 47.84 KB │           12 │     74.59 KB │
+│     └ ignore       │ 5.1.4   │ 46.67 KB │            0 │          0 B │
+└────────────────────┴─────────┴──────────┴──────────────┴──────────────┘
 ```
