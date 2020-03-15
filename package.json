@@ -6,9 +6,9 @@
     "nmls"
   ],
   "bin": {
-    "nmls": "./bin/nmls.js"
+    "nmls": "./nmls.js"
   },
-  "main": "./lib/index.js",
+  "main": "./index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cenfun/nmls.git"

@@ -7,7 +7,7 @@ if (vs[0] < 10) {
     process.exit(1);
 }
 
-var NMLS = require("../lib/index.js");
+var NMLS = require("./index.js");
 
 var path = ".";
 var nmls = new NMLS(path);
