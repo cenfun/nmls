@@ -1,4 +1,4 @@
-# nmls
+# nmls - Node Modules List
 An analysis tool to show dependencies detail in node modules folder.
 
 ![npm](https://img.shields.io/npm/v/nmls.svg)
