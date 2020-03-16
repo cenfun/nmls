@@ -201,7 +201,8 @@ class NMLS {
             const isLink = stats.isSymbolicLink();
             if (!isDir && !isLink) {
                 //console.log(stats);
-                output(CGS.red("[nmls] Unknown module: " + mPath));
+                //sometimes has files, like .yarn-integrity
+                //output(CGS.red("[nmls] Unknown module: " + mPath));
                 continue;
             }
 
@@ -570,15 +571,15 @@ class NMLS {
 
         var k = 1024;
         if (bytes < k) {
-            return `${bytes}B`;
+            return `${bytes} B`;
         }
         var m = k * k;
         if (bytes < m) {
-            return `${Math.round(bytes / k * 100) / 100}KB`;
+            return `${Math.round(bytes / k * 100) / 100} KB`;
         }
         var g = m * k;
         if (bytes < g) {
-            var gStr = `${Math.round(bytes / m * 100) / 100}MB`;
+            var gStr = `${Math.round(bytes / m * 100) / 100} MB`;
             if (bytes < 10 * m) {
                 return CGS.green(gStr);
             } else if (bytes < 100 * m) {
@@ -589,7 +590,7 @@ class NMLS {
         }
         var t = g * k;
         if (bytes < t) {
-            var tStr = `${Math.round(bytes / g * 100) / 100}GB`;
+            var tStr = `${Math.round(bytes / g * 100) / 100} GB`;
             return CGS.magenta(tStr);
         }
 
