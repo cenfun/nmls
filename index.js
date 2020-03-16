@@ -83,12 +83,17 @@ class NMLS {
         this.projectInfo.dAmount = this.projectInfo.tAmount;
         this.projectInfo.dFiles = this.projectInfo.tFiles;
         this.projectInfo.dSize = this.projectInfo.tSize;
+        this.projectInfo.dNested = this.projectInfo.tNested;
 
         //init nodeModules for all dependencies with duplicated
         this.initNodeModules(nodeModules);
-        output("[nmls] generated node modules");
 
-        //console.log(this.projectInfo, Object.keys(nodeModules).length);
+        const total = Object.keys(nodeModules).length;
+        const nested = Object.keys(nodeModules).filter(k => k.indexOf("node_modules") !== -1).length;
+
+        output("[nmls] generated node modules: total: " + total + " nested: " + nested);
+
+        //console.log(this.projectInfo);
 
         await this.showInfo();
 
@@ -110,7 +115,8 @@ class NMLS {
             size: size,
             tAmount: 0,
             tFiles: 0,
-            tSize: 0
+            tSize: 0,
+            tNested: 0
         };
 
         //types handler
@@ -119,6 +125,10 @@ class NMLS {
         this.getTypes().forEach(type => {
             let dep = projectJson[type];
             if (dep) {
+                const keys = Object.keys(dep);
+                if (!keys.length) {
+                    return;
+                }
                 const sub = {
                     type: true,
                     name: type
@@ -274,6 +284,10 @@ class NMLS {
         parent.tAmount += 1;
         parent.tFiles += info.files;
         parent.tSize += info.size;
+        //if path has node_modules is tNested
+        if (info.path.indexOf("node_modules") !== -1) {
+            parent.tNested += 1;
+        }
 
         //generate sub node_modules
         const nmPath = this.getNodeModulesPath(mPath);
@@ -281,11 +295,13 @@ class NMLS {
             info.tAmount = 0;
             info.tFiles = 0;
             info.tSize = 0;
+            info.tNested = 0;
             await this.generateNodeModules(nodeModules, info, nmPath);
             //handler total files
             parent.tAmount += info.tAmount;
             parent.tFiles += info.tFiles;
             parent.tSize += info.tSize;
+            parent.tNested += info.tNested;
         }
 
     }
@@ -294,7 +310,8 @@ class NMLS {
         const dInfo = {
             dAmount: 0,
             dFiles: 0,
-            dSize: 0
+            dSize: 0,
+            dNested: 0
         };
         if (ds) {
             const keys = Object.keys(ds);
@@ -314,6 +331,7 @@ class NMLS {
                     dInfo.dAmount = "";
                     dInfo.dFiles = "";
                     dInfo.dSize = "";
+                    dInfo.dNested = "";
                     dInfo.subs = subs;
                 }
             }
@@ -330,6 +348,9 @@ class NMLS {
                 m.dAmount += 1;
                 m.dFiles += cm.files;
                 m.dSize += cm.size;
+                if (cm.path.indexOf("node_modules") !== -1) {
+                    m.dNested += 1;
+                }
             });
         });
     }
@@ -427,6 +448,7 @@ class NMLS {
             sub.dAmount = cm.dAmount;
             sub.dFiles = cm.dFiles;
             sub.dSize = cm.dSize;
+            sub.dNested = cm.dNested;
         });
     }
 
@@ -476,6 +498,12 @@ class NMLS {
             type: "number",
             maxWidth: 12,
             formatter: BF
+        }, {
+            id: "dNested",
+            name: "Dependencies Nested",
+            type: "number",
+            maxWidth: 12,
+            formatter: NF
         }];
 
         if (showFiles) {
