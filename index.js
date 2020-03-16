@@ -25,10 +25,32 @@ class NMLS {
         return {
             sort: "",
             asc: false,
-            externals: ["internalDependencies"],
             module: "",
-            files: false
+            files: false,
+            externalType: "internalDependencies",
+            defaultTypes: ["dependencies", "devDependencies", "peerDependencies", "bundledDependencies", "optionalDependencies"]
         };
+    }
+
+    initAlias(option) {
+        if (!option) {
+            return;
+        }
+        const alias = {
+            s: "sort",
+            a: "asc",
+            m: "module",
+            f: "files",
+            e: "externalType"
+        };
+        for (let k in alias) {
+            let v = alias[k];
+            if (option.hasOwnProperty(k)) {
+                option[v] = option[k];
+                delete option[k];
+            }
+        }
+        return option;
     }
 
     //========================================================================================
@@ -94,7 +116,7 @@ class NMLS {
         //types handler
         const subs = [];
         const projectDependencies = {};
-        this.getAllTypes().forEach(type => {
+        this.getTypes().forEach(type => {
             let dep = projectJson[type];
             if (dep) {
                 const sub = {
@@ -116,33 +138,12 @@ class NMLS {
         return projectInfo;
     }
 
-    initAlias(option) {
-        if (!option) {
-            return;
-        }
-        const alias = {
-            s: "sort",
-            a: "asc",
-            e: "externals",
-            m: "module",
-            f: "files"
-        };
-        for (let k in alias) {
-            let v = alias[k];
-            if (option.hasOwnProperty(k)) {
-                option[v] = option[k];
-                delete option[k];
-            }
-        }
-        return option;
-    }
-
-    getAllTypes() {
+    getTypes() {
         if (this.allTypes) {
             return this.allTypes;
         }
-        const allTypes = ["dependencies", "devDependencies", "peerDependencies", "bundledDependencies", "optionalDependencies"];
-        this.toList(this.option.externals).forEach(function (item) {
+        const allTypes = this.option.defaultTypes;
+        this.toList(this.option.externalType).forEach(function (item) {
             if (item) {
                 item = (item + "").trim();
                 if (!allTypes.includes(item)) {
