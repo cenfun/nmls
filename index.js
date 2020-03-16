@@ -436,6 +436,20 @@ class NMLS {
 
         const showFiles = this.option.files;
 
+        const NF = (v, row) => {
+            if (typeof (v) !== "number") {
+                return v;
+            }
+            return v.toLocaleString();
+        };
+
+        const BF = (v, row) => {
+            if (typeof (v) !== "number") {
+                return v;
+            }
+            return this.toBytes(v);
+        };
+
         //columns
         var columns = [{
             id: "name",
@@ -449,41 +463,34 @@ class NMLS {
             id: "size",
             name: "Size",
             type: "number",
-            formatter: (v, row) => {
-                if (typeof (v) !== "number") {
-                    return v;
-                }
-                return this.toBytes(v);
-            }
+            formatter: BF
         }, {
             id: "dAmount",
             name: "Dependencies Amount",
             type: "number",
-            maxWidth: 12
+            maxWidth: 12,
+            formatter: NF
         }, {
             id: "dSize",
             name: "Dependencies Size",
             type: "number",
             maxWidth: 12,
-            formatter: (v, row) => {
-                if (typeof (v) !== "number") {
-                    return v;
-                }
-                return this.toBytes(v);
-            }
+            formatter: BF
         }];
 
         if (showFiles) {
             columns.splice(2, 0, {
                 id: "files",
                 name: "Files",
-                type: "number"
+                type: "number",
+                formatter: NF
             });
             columns.splice(5, 0, {
                 id: "dFiles",
                 name: "Dependencies Files",
                 type: "number",
-                maxWidth: 12
+                maxWidth: 12,
+                formatter: NF
             });
         }
 
