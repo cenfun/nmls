@@ -488,22 +488,21 @@ class NMLS {
             formatter: BF
         }, {
             id: "dAmount",
-            name: "Dependencies Amount",
+            name: "Deps Amount",
             type: "number",
-            maxWidth: 12,
+            maxWidth: 8,
+            formatter: NF
+        }, {
+            id: "dNested",
+            name: "Deps Nested",
+            type: "number",
+            maxWidth: 8,
             formatter: NF
         }, {
             id: "dSize",
-            name: "Dependencies Size",
+            name: "Deps Size",
             type: "number",
-            maxWidth: 12,
             formatter: BF
-        }, {
-            id: "dNested",
-            name: "Dependencies Nested",
-            type: "number",
-            maxWidth: 12,
-            formatter: NF
         }];
 
         if (showFiles) {
@@ -513,11 +512,11 @@ class NMLS {
                 type: "number",
                 formatter: NF
             });
-            columns.splice(5, 0, {
+            columns.splice(6, 0, {
                 id: "dFiles",
-                name: "Dependencies Files",
+                name: "Deps Files",
                 type: "number",
-                maxWidth: 12,
+                maxWidth: 8,
                 formatter: NF
             });
         }
@@ -571,15 +570,15 @@ class NMLS {
 
         var k = 1024;
         if (bytes < k) {
-            return `${bytes} B`;
+            return `${bytes}B`;
         }
         var m = k * k;
         if (bytes < m) {
-            return `${Math.round(bytes / k * 100) / 100} KB`;
+            return `${Math.round(bytes / k * 100) / 100}KB`;
         }
         var g = m * k;
         if (bytes < g) {
-            var gStr = `${Math.round(bytes / m * 100) / 100} MB`;
+            var gStr = `${Math.round(bytes / m * 100) / 100}MB`;
             if (bytes < 10 * m) {
                 return CGS.green(gStr);
             } else if (bytes < 100 * m) {
@@ -590,7 +589,7 @@ class NMLS {
         }
         var t = g * k;
         if (bytes < t) {
-            var tStr = `${Math.round(bytes / g * 100) / 100} GB`;
+            var tStr = `${Math.round(bytes / g * 100) / 100}GB`;
             return CGS.magenta(tStr);
         }
 
