@@ -91,7 +91,7 @@ class NMLS {
         const total = Object.keys(nodeModules).length;
         const nested = Object.keys(nodeModules).filter(k => k.indexOf("node_modules") !== -1).length;
 
-        output("[nmls] generated node modules: total: " + total + " nested: " + nested);
+        output("[nmls] generated node modules: total: " + total.toLocaleString() + " nested: " + nested.toLocaleString());
 
         //console.log(this.projectInfo);
 
