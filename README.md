@@ -43,15 +43,15 @@ nmls --module console-grid
 ```
 [nmls] path: C:/workspace/nmls
 [nmls] generated project: nmls
-[nmls] generated node modules
-┌────────────────────┬─────────┬──────────┬──────────────┬──────────────┐
-│                    │         │          │ Dependencies │ Dependencies │
-│  Name              │ Version │     Size │       Amount │         Size │
-├────────────────────┼─────────┼──────────┼──────────────┼──────────────┤
-│ └ nmls             │ 2.0.0   │ 26.81 KB │           15 │    200.13 KB │
-│   └ dependencies   │         │          │              │              │
-│     ├ console-grid │ 1.0.16  │ 31.03 KB │            0 │          0 B │
-│     ├ gauge        │ 2.7.4   │ 47.84 KB │           12 │     74.59 KB │
-│     └ ignore       │ 5.1.4   │ 46.67 KB │            0 │          0 B │
-└────────────────────┴─────────┴──────────┴──────────────┴──────────────┘
+[nmls] generated node modules: total: 15 nested: 0 duplications: 0.00%
+┌────────────────────┬─────────┬──────────┬──────────┬──────────┬───────────┐
+│                    │         │          │     Deps │     Deps │           │
+│  Name              │ Version │     Size │   Amount │   Nested │ Deps Size │
+├────────────────────┼─────────┼──────────┼──────────┼──────────┼───────────┤
+│ └ nmls             │ 2.0.0   │ 27.06 KB │       15 │        0 │ 200.13 KB │
+│   └ dependencies   │         │          │          │          │           │
+│     ├ console-grid │ 1.0.16  │ 31.03 KB │        0 │        0 │       0 B │
+│     ├ gauge        │ 2.7.4   │ 47.84 KB │       12 │        0 │  74.59 KB │
+│     └ ignore       │ 5.1.4   │ 46.67 KB │        0 │        0 │       0 B │
+└────────────────────┴─────────┴──────────┴──────────┴──────────┴───────────┘
 ```
