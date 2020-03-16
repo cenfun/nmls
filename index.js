@@ -191,7 +191,18 @@ class NMLS {
 
     async generateNodeModules(nodeModules, parent, nmPath) {
         const list = await this.readdir(nmPath);
+        if (nmPath === this.projectNmPath) {
+            this.projectInfo.dLength = list.length;
+        }
+
+        let i = 0;
         for (let item of list) {
+
+            i += 1;
+            if (nmPath === this.projectNmPath) {
+                this.projectInfo.dLoaded = i;
+            }
+
             const mPath = this.formatPath(path.resolve(nmPath, item));
             const stats = await this.stat(mPath);
             if (!stats) {
@@ -648,15 +659,12 @@ class NMLS {
     }
 
     showProgress(moduleName) {
-        const dMap = this.projectInfo.dMap;
-        if (dMap && dMap[moduleName]) {
-            this.projectInfo.dLoaded += 1;
-        }
-        var per = 0;
+        let per = 0;
         if (this.projectInfo.dLength) {
             per = this.projectInfo.dLoaded / this.projectInfo.dLength;
         }
-        gauge.show(moduleName, per);
+        const text = (per * 100).toFixed(2) + "% " + moduleName;
+        gauge.show(text, per);
     }
 
     //========================================================================================
