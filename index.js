@@ -90,8 +90,9 @@ class NMLS {
 
         const total = Object.keys(nodeModules).length;
         const nested = Object.keys(nodeModules).filter(k => k.indexOf("node_modules") !== -1).length;
+        const duplications = (nested / total * 100).toFixed(2) + "%";
 
-        output("[nmls] generated node modules: total: " + total.toLocaleString() + " nested: " + nested.toLocaleString());
+        output("[nmls] generated node modules: total: " + total.toLocaleString() + " nested: " + nested.toLocaleString() + " duplications: " + duplications);
 
         //console.log(this.projectInfo);
 
