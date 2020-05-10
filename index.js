@@ -462,6 +462,7 @@ class NMLS {
             sub.dFiles = cm.dFiles;
             sub.dSize = cm.dSize;
             sub.dNested = cm.dNested;
+            this.generateDependenciesInfo(sub);
         });
     }
 
