@@ -56,3 +56,8 @@ nmls --module console-grid
 │     └ object-assign │ 4.1.1   │  6.28 KB │        0 │        0 │       0 B │
 └─────────────────────┴─────────┴──────────┴──────────┴──────────┴───────────┘
 ```
+
+## Changelog
+
+* v2.0.2
+    * fixed absolute path issue for ignore

@@ -612,24 +612,36 @@ class NMLS {
 
     //========================================================================================
 
-    async generateFolderFileList(p, ig) {
+    isPathIgnored(ig, relPath) {
+        if (!ig) {
+            return false;
+        }
+        if (path.isAbsolute(relPath)) {
+            return false;
+        }
+        if (ig.ignores(relPath) || ig.ignores(relPath + "/")) {
+            return true;
+        }
+        return false;
+    }
+
+    async generateFolderFileList(parentPath, ig) {
         let fileList = [];
-        const list = fs.readdirSync(p);
+        const list = fs.readdirSync(parentPath);
         for (let name of list) {
-            const subPath = this.relativePath(p + "/" + name);
-            if (ig) {
-                if (ig.ignores(subPath) || ig.ignores(subPath + "/")) {
-                    continue;
-                }
+            const absPath = path.resolve(parentPath, name);
+            const relPath = this.relativePath(absPath);
+            if (this.isPathIgnored(ig, relPath)) {
+                continue;
             }
-            const info = fs.statSync(subPath);
+            const info = fs.statSync(absPath);
             if (info.isDirectory()) {
-                const subFileList = await this.generateFolderFileList(subPath, ig);
+                const subFileList = await this.generateFolderFileList(absPath, ig);
                 fileList = fileList.concat(subFileList);
             } else if (info.isFile()) {
-                fileList.push(subPath);
+                fileList.push(relPath);
             } else {
-                output(CGS.red("[nmls] Unknown file: " + subPath));
+                output(CGS.red("[nmls] Unknown file: " + relPath));
             }
         }
         return fileList;
