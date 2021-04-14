@@ -35,9 +35,17 @@ nmls
 nmls -s dSize
 nmls --sort dSize
 
+#sort by asc
+nmls -a
+nmls --asc
+
 #show module info
 nmls -m console-grid
 nmls --module console-grid
+
+#show files
+nmls -f
+nmls --files
 ```
 # Example
 ```

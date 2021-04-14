@@ -1,11 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const ignore = require('ignore');
+const ignore = require("ignore");
 const ConsoleGrid = require("console-grid");
-const CGS = ConsoleGrid.Style;
+const EC = require("eight-colors");
 const consoleGrid = new ConsoleGrid();
 
-const Gauge = require('gauge');
+const Gauge = require("gauge");
 const gauge = new Gauge();
 
 function output() {
@@ -18,7 +18,7 @@ class NMLS {
 
     constructor(root) {
         this.root = this.formatPath(path.resolve(root || "."));
-        output("[nmls] path: " + this.root);
+        output(`[nmls] path: ${this.root}`);
     }
 
     defaultOption() {
@@ -43,8 +43,8 @@ class NMLS {
             f: "files",
             e: "externalType"
         };
-        for (let k in alias) {
-            let v = alias[k];
+        for (const k in alias) {
+            const v = alias[k];
             if (option.hasOwnProperty(k)) {
                 option[v] = option[k];
                 delete option[k];
@@ -60,18 +60,18 @@ class NMLS {
 
         const projectJson = this.getModuleJson(this.root);
         if (!projectJson) {
-            output(CGS.red("[nmls] ERROR: Failed to read package.json"));
+            output(EC.red("[nmls] ERROR: Failed to read package.json"));
             return;
         }
 
         this.projectIgnore = this.getProjectIgnore(this.root);
 
         this.projectInfo = await this.generateProjectInfo(projectJson);
-        output("[nmls] generated project: " + this.projectInfo.name);
+        output(`[nmls] generated project: ${this.projectInfo.name}`);
 
         this.projectNmPath = this.getNodeModulesPath(this.root);
         if (!this.projectNmPath) {
-            output(CGS.red("[nmls] ERROR: Not found node_modules, or try npm install first."));
+            output(EC.red("[nmls] ERROR: Not found node_modules, or try npm install first."));
             return;
         }
 
@@ -90,9 +90,17 @@ class NMLS {
 
         const total = Object.keys(nodeModules).length;
         const nested = Object.keys(nodeModules).filter(k => k.indexOf("node_modules") !== -1).length;
-        const duplications = (nested / total * 100).toFixed(2) + "%";
+        const ds = nested / total * 100;
+        let duplications = `${ds.toFixed(2)} %`;
+        if (ds > 20) {
+            duplications = EC.red(duplications);
+        } else if (ds > 10) {
+            duplications = EC.yellow(duplications);
+        } else if (ds > 0) {
+            duplications = EC.green(duplications);
+        }
 
-        output("[nmls] generated node modules: total: " + total.toLocaleString() + " nested: " + nested.toLocaleString() + " duplications: " + duplications);
+        output(`[nmls] generated node modules: total: ${total.toLocaleString()} nested: ${this.NFC(nested)} duplications: ${duplications}`);
 
         //console.log(this.projectInfo);
 
@@ -124,7 +132,7 @@ class NMLS {
         const subs = [];
         const projectDependencies = {};
         this.getTypes().forEach(type => {
-            let dep = projectJson[type];
+            const dep = projectJson[type];
             if (dep) {
                 const keys = Object.keys(dep);
                 if (!keys.length) {
@@ -154,9 +162,9 @@ class NMLS {
             return this.allTypes;
         }
         const allTypes = this.option.defaultTypes;
-        this.toList(this.option.externalType).forEach(function (item) {
+        this.toList(this.option.externalType).forEach(function(item) {
             if (item) {
-                item = (item + "").trim();
+                item = (`${item}`).trim();
                 if (!allTypes.includes(item)) {
                     allTypes.push(item);
                 }
@@ -196,7 +204,7 @@ class NMLS {
         }
 
         let i = 0;
-        for (let item of list) {
+        for (const item of list) {
 
             i += 1;
             if (nmPath === this.projectNmPath) {
@@ -214,7 +222,7 @@ class NMLS {
             if (!isDir && !isLink) {
                 //console.log(stats);
                 //sometimes has files, like .yarn-integrity
-                //output(CGS.red("[nmls] Unknown module: " + mPath));
+                //output(EC.red("[nmls] Unknown module: " + mPath));
                 continue;
             }
 
@@ -232,7 +240,7 @@ class NMLS {
         const mJson = this.getModuleJson(mPath);
         //not a valid module, like .bin/.cache
         if (!mJson) {
-            //output(CGS.red("[nmls] ERROR: Failed to read module package.json: " + mPath));
+            //output(EC.red("[nmls] ERROR: Failed to read module package.json: " + mPath));
             const fileList = await this.generateFolderFileList(mPath);
             const size = await this.generateFileListSize(fileList);
             //console.log(fileList.length);
@@ -374,7 +382,7 @@ class NMLS {
             dList.forEach(dn => {
                 const cm = this.getModule(m, dn);
                 if (!cm) {
-                    //output(CGS.red("[nmls] Not found module: " + dn));
+                    //output(EC.red("[nmls] Not found module: " + dn));
                     return;
                 }
                 //already count
@@ -389,12 +397,12 @@ class NMLS {
 
     getModule(parent, dn) {
         //from child first
-        let p = parent.path + "/node_modules/" + dn;
+        let p = `${parent.path}/node_modules/${dn}`;
         let m = this.nodeModules[p];
 
         //from parent next
         while (!m) {
-            p = this.relativePath(path.resolve(p, "../" + dn), this.projectNmPath);
+            p = this.relativePath(path.resolve(p, `../${dn}`), this.projectNmPath);
             if (p.indexOf("../") !== -1) {
                 break;
             }
@@ -430,7 +438,7 @@ class NMLS {
                     }
                     subs.push(mInfo);
                 } else {
-                    output(CGS.red("[nmls] ERROR: Not found module: " + m));
+                    output(EC.red(`[nmls] ERROR: Not found module: ${m}`));
                 }
             });
             this.projectInfo.subs = subs;
@@ -468,26 +476,12 @@ class NMLS {
 
     //========================================================================================
 
-    async showGrid(info) {
+    showGrid(info) {
 
         const showFiles = this.option.files;
 
-        const NF = (v, row) => {
-            if (typeof (v) !== "number") {
-                return v;
-            }
-            return v.toLocaleString();
-        };
-
-        const BF = (v, row) => {
-            if (typeof (v) !== "number") {
-                return v;
-            }
-            return this.toBytes(v);
-        };
-
         //columns
-        var columns = [{
+        const columns = [{
             id: "name",
             name: " Name",
             maxWidth: 60
@@ -499,24 +493,24 @@ class NMLS {
             id: "size",
             name: "Size",
             type: "number",
-            formatter: BF
+            formatter: this.BF.bind(this)
         }, {
             id: "dAmount",
             name: "Deps Amount",
             type: "number",
             maxWidth: 8,
-            formatter: NF
+            formatter: this.NF
         }, {
             id: "dNested",
             name: "Deps Nested",
             type: "number",
             maxWidth: 8,
-            formatter: NF
+            formatter: this.NFC
         }, {
             id: "dSize",
             name: "Deps Size",
             type: "number",
-            formatter: BF
+            formatter: this.BF.bind(this)
         }];
 
         if (showFiles) {
@@ -524,32 +518,32 @@ class NMLS {
                 id: "files",
                 name: "Files",
                 type: "number",
-                formatter: NF
+                formatter: this.NF
             });
             columns.splice(6, 0, {
                 id: "dFiles",
                 name: "Deps Files",
                 type: "number",
                 maxWidth: 8,
-                formatter: NF
+                formatter: this.NF
             });
         }
 
         //option
-        var sortField = "";
-        var sortColumn = this.getSortColumn(this.option.sort, columns);
+        let sortField = "";
+        const sortColumn = this.getSortColumn(this.option.sort, columns);
         if (sortColumn) {
             sortField = sortColumn.id;
-            output("[nmls] sort by: " + sortColumn.name);
+            output(`[nmls] sort by: ${sortColumn.name}`);
         }
 
-        var option = {
+        const option = {
             sortField: sortField,
             sortAsc: this.option.asc
         };
 
         //data
-        var data = {
+        const data = {
             option: option,
             columns: columns,
             rows: [info]
@@ -568,8 +562,8 @@ class NMLS {
             sort = "dSize";
         }
 
-        for (var i = 0, l = columns.length; i < l; i++) {
-            var column = columns[i];
+        for (let i = 0, l = columns.length; i < l; i++) {
+            const column = columns[i];
             if (sort === column.id) {
                 return column;
             }
@@ -582,29 +576,29 @@ class NMLS {
 
         bytes = Math.max(bytes, 0);
 
-        var k = 1024;
+        const k = 1024;
         if (bytes < k) {
             return `${bytes} B`;
         }
-        var m = k * k;
+        const m = k * k;
         if (bytes < m) {
             return `${Math.round(bytes / k * 100) / 100} KB`;
         }
-        var g = m * k;
+        const g = m * k;
         if (bytes < g) {
-            var gStr = `${Math.round(bytes / m * 100) / 100} MB`;
+            const gStr = `${Math.round(bytes / m * 100) / 100} MB`;
             if (bytes < 10 * m) {
-                return CGS.green(gStr);
+                return EC.green(gStr);
             } else if (bytes < 100 * m) {
-                return CGS.yellow(gStr);
-            } else {
-                return CGS.red(gStr);
+                return EC.yellow(gStr);
             }
+            return EC.red(gStr);
+            
         }
-        var t = g * k;
+        const t = g * k;
         if (bytes < t) {
-            var tStr = `${Math.round(bytes / g * 100) / 100} GB`;
-            return CGS.magenta(tStr);
+            const tStr = `${Math.round(bytes / g * 100) / 100} GB`;
+            return EC.magenta(tStr);
         }
 
         return bytes;
@@ -619,7 +613,7 @@ class NMLS {
         if (path.isAbsolute(relPath)) {
             return false;
         }
-        if (ig.ignores(relPath) || ig.ignores(relPath + "/")) {
+        if (ig.ignores(relPath) || ig.ignores(`${relPath}/`)) {
             return true;
         }
         return false;
@@ -628,7 +622,7 @@ class NMLS {
     async generateFolderFileList(parentPath, ig) {
         let fileList = [];
         const list = fs.readdirSync(parentPath);
-        for (let name of list) {
+        for (const name of list) {
             const absPath = path.resolve(parentPath, name);
             const relPath = this.relativePath(absPath);
             if (this.isPathIgnored(ig, relPath)) {
@@ -641,7 +635,7 @@ class NMLS {
             } else if (info.isFile()) {
                 fileList.push(relPath);
             } else {
-                output(CGS.red("[nmls] Unknown file: " + relPath));
+                output(EC.red(`[nmls] Unknown file: ${relPath}`));
             }
         }
         return fileList;
@@ -649,8 +643,8 @@ class NMLS {
 
     async generateFileListSize(fileList) {
         let size = 0;
-        for (let filePath of fileList) {
-            var stats = await this.stat(filePath);
+        for (const filePath of fileList) {
+            const stats = await this.stat(filePath);
             if (stats) {
                 size += stats.size;
             }
@@ -676,17 +670,17 @@ class NMLS {
         if (this.projectInfo.dLength) {
             per = this.projectInfo.dLoaded / this.projectInfo.dLength;
         }
-        const text = (per * 100).toFixed(2) + "% " + moduleName;
+        const text = `${(per * 100).toFixed(2)}% ${moduleName}`;
         gauge.show(text, per);
     }
 
     //========================================================================================
 
-    async readdir(p) {
+    readdir(p) {
         return new Promise((resolve) => {
             fs.readdir(p, (err, list) => {
                 if (err) {
-                    output("[nmls] ERROR: fs.readdir: " + CGS.yellow(p));
+                    output(`[nmls] ERROR: fs.readdir: ${EC.yellow(p)}`);
                     resolve([]);
                     return;
                 }
@@ -695,11 +689,11 @@ class NMLS {
         });
     }
 
-    async stat(p) {
+    stat(p) {
         return new Promise((resolve) => {
             fs.lstat(p, (err, stats) => {
                 if (err) {
-                    output("[nmls] ERROR: fs.stat: " + CGS.yellow(p));
+                    output(`[nmls] ERROR: fs.stat: ${EC.yellow(p)}`);
                     resolve(null);
                     return;
                 }
@@ -725,11 +719,11 @@ class NMLS {
 
     readFileContent(filePath) {
         let content = null;
-        let isExists = fs.existsSync(filePath);
+        const isExists = fs.existsSync(filePath);
         if (isExists) {
             content = fs.readFileSync(filePath);
             if (Buffer.isBuffer(content)) {
-                content = content.toString('utf8');
+                content = content.toString("utf8");
             }
         }
         return content;
@@ -737,7 +731,7 @@ class NMLS {
 
     readJSON(filePath) {
         //do NOT use require, it has cache
-        let content = this.readFileContent(filePath);
+        const content = this.readFileContent(filePath);
         let json = null;
         if (content) {
             try {
@@ -754,7 +748,7 @@ class NMLS {
             return v;
         }
         if (v) {
-            return (v + "").split(",");
+            return (`${v}`).split(",");
         }
         return [];
     }
@@ -767,6 +761,36 @@ class NMLS {
                 setImmediate(resolve);
             }
         });
+    }
+
+    NF(v, row) {
+        if (typeof (v) !== "number") {
+            return v;
+        }
+        return v.toLocaleString();
+    }
+
+    NFC(n, row) {
+        if (typeof (n) !== "number") {
+            return n;
+        }
+        let v = n.toLocaleString();
+        if (n > 10) {
+            v = EC.red(v);
+        } else if (n > 5) {
+            v = EC.yellow(v);
+        } else if (n > 0) {
+            v = EC.green(v);
+        }
+
+        return v;
+    }
+
+    BF(v, row) {
+        if (typeof (v) !== "number") {
+            return v;
+        }
+        return this.toBytes(v);
     }
 
 }
