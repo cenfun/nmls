@@ -1,14 +1,17 @@
 {
   "name": "nmls",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "An analysis tool to Node Modules List",
   "keywords": [
     "nmls"
   ],
   "bin": {
-    "nmls": "./bin.js"
+    "nmls": "./lib/bin.js"
   },
-  "main": "./index.js",
+  "main": "./lib/index.js",
+  "files": [
+    "lib"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/cenfun/nmls.git"

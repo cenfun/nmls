@@ -67,5 +67,8 @@ nmls --files
 
 ## Changelog
 
+* v2.0.3
+    * fixed color
+
 * v2.0.2
     * fixed absolute path issue for ignore
