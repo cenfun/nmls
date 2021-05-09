@@ -65,6 +65,9 @@ nmls --files
 └─────────────────────┴─────────┴──────────┴──────────┴──────────┴───────────┘
 ```
 
+# Optimization
+* It is recommended to reduce nested modules. try to update to latest version.
+
 ## Changelog
 
 * v2.0.3

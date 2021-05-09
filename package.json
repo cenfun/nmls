@@ -17,6 +17,7 @@
     "url": "https://github.com/cenfun/nmls.git"
   },
   "dependencies": {
+    "commander": "^7.2.0",
     "console-grid": "^1.0.17",
     "eight-colors": "^1.0.0",
     "gauge": "^3.0.0",
