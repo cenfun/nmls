@@ -37,7 +37,7 @@ module.exports = {
             "after": true,
             "before": false
         }],
-        "complexity": ["error", 8],
+        "complexity": ["error", 18],
         "curly": "error",
         "dot-location": ["error", "property"],
         "dot-notation": "error",
