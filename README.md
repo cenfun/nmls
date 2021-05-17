@@ -17,14 +17,6 @@ nmls
 nmls -s dSize
 nmls --sort dSize
 
-# sort by asc
-nmls -a
-nmls --asc
-
-# filter module with name
-nmls -m my-module-name
-nmls --module my-module-name
-
 # show workspace
 nmls -w
 nmls --workspace
@@ -44,7 +36,6 @@ nmls --help
 │   ├  -r, --root <path>      │ project root, default value is '.' (current working directory)    │
 │   ├  -s, --sort <field>     │ sort field (name/version/size/dAmount/dNested/dSize/files/dFiles) │
 │   ├  -a, --asc              │ sort by asc                                                       │
-│   ├  -m, --module <name>    │ filter modules with name                                          │
 │   ├  -w, --workspace [name] │ show all packages of workspace, or filter with name               │
 │   ├  -f, --files            │ show files columns                                                │
 │   └  -h, --help             │ display help for command                                          │
@@ -59,7 +50,7 @@ nmls -f
 │                     │         │       │           │     Deps │     Deps │     Deps │           │
 │  Name               │ Version │ Files │      Size │   Amount │   Nested │    Files │ Deps Size │
 ├─────────────────────┼─────────┼───────┼───────────┼──────────┼──────────┼──────────┼───────────┤
-│ └ nmls              │ 2.0.3   │    14 │  37.72 KB │      134 │       23 │    3,124 │  12.99 MB │
+│ └ nmls              │ 3.0.0   │    14 │  37.66 KB │      134 │       23 │    3,124 │  12.99 MB │
 │   ├ dependencies    │         │       │           │          │          │          │           │
 │   │ ├ commander     │ 7.2.0   │     8 │ 141.32 KB │        0 │        0 │        0 │       0 B │
 │   │ ├ console-grid  │ 1.0.17  │     4 │  28.19 KB │        1 │        0 │        3 │   2.36 KB │
@@ -87,6 +78,7 @@ see [default options](./lib/options.js)
 
 * 3.0.0
     * support workspace
+    * removed useless --module option
 
 * 2.0.3
     * fixed color
