@@ -75,10 +75,9 @@ nmls -f
 
 # Node.js API
 ```js
-var NMLS = require("nmls");
-var nmls = new NMLS();
-var option = {};
-nmls.start(option).then((info) => {
+const NMLS = require("nmls");
+const option = {};
+new NMLS().start(option).then((info) => {
     console.log("[nmls] done");
 });
 ```
@@ -86,8 +85,11 @@ see [default options](./lib/options.js)
 
 ## Changelog
 
-* v2.0.3
+* 3.0.0
+    * support workspace
+
+* 2.0.3
     * fixed color
 
-* v2.0.2
+* 2.0.2
     * fixed absolute path issue for ignore
