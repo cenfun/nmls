@@ -45,12 +45,12 @@ nmls --help
 ```
 nmls -f
 [nmls] root: G:/workspace/nmls
-[nmls] generated node modules: total: 134 nested: 23 (repetition: 17.16 %)
+[nmls] generated node modules: 135  (nested: 24  size percentage: 11.55 %)
 ┌─────────────────────┬─────────┬───────┬───────────┬──────────┬──────────┬──────────┬───────────┐
 │                     │         │       │           │     Deps │     Deps │     Deps │           │
 │  Name               │ Version │ Files │      Size │   Amount │   Nested │    Files │ Deps Size │
 ├─────────────────────┼─────────┼───────┼───────────┼──────────┼──────────┼──────────┼───────────┤
-│ └ nmls              │ 3.0.0   │    14 │  37.66 KB │      134 │       23 │    3,124 │  12.99 MB │
+│ └ nmls              │ 3.0.1   │    14 │  38.25 KB │      135 │       24 │    2,105 │  11.77 MB │
 │   ├ dependencies    │         │       │           │          │          │          │           │
 │   │ ├ commander     │ 7.2.0   │     8 │ 141.32 KB │        0 │        0 │        0 │       0 B │
 │   │ ├ console-grid  │ 1.0.17  │     4 │  28.19 KB │        1 │        0 │        3 │   2.36 KB │
@@ -60,7 +60,7 @@ nmls -f
 │   │ ├ ignore        │ 5.1.8   │     7 │  48.65 KB │        0 │        0 │        0 │       0 B │
 │   │ └ object-assign │ 4.1.1   │     4 │    6.3 KB │        0 │        0 │        0 │       0 B │
 │   └ devDependencies │         │       │           │          │          │          │           │
-│     └ eslint        │ 7.26.0  │   395 │   2.99 MB │      117 │       23 │    2,638 │   9.66 MB │
+│     └ eslint        │ 7.27.0  │   393 │      3 MB │      118 │       24 │    1,593 │   8.37 MB │
 └─────────────────────┴─────────┴───────┴───────────┴──────────┴──────────┴──────────┴───────────┘
 ```
 
@@ -75,6 +75,9 @@ new NMLS().start(option).then((info) => {
 see [default options](./lib/options.js)
 
 ## Changelog
+
+* 3.0.1
+    * added size percentage
 
 * 3.0.0
     * support workspace

@@ -1,6 +1,6 @@
 {
   "name": "nmls",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "An analysis tool to Node Modules List",
   "keywords": [
     "nmls"
@@ -26,6 +26,6 @@
     "object-assign": "^4.1.1"
   },
   "devDependencies": {
-    "eslint": "^7.26.0"
+    "eslint": "^7.27.0"
   }
 }
