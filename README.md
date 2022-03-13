@@ -76,6 +76,9 @@ see [default options](./lib/options.js)
 
 ## Changelog
 
+* 3.0.2
+    * fixed path error
+
 * 3.0.1
     * added size percentage
 
