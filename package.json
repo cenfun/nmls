@@ -1,31 +1,31 @@
 {
-  "name": "nmls",
-  "version": "3.0.2",
-  "description": "An analysis tool to Node Modules List",
-  "keywords": [
-    "nmls"
-  ],
-  "bin": {
-    "nmls": "./lib/bin.js"
-  },
-  "main": "./lib/index.js",
-  "files": [
-    "lib"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/cenfun/nmls.git"
-  },
-  "dependencies": {
-    "commander": "^7.2.0",
-    "console-grid": "^1.0.17",
-    "eight-colors": "^1.0.0",
-    "gauge": "^3.0.0",
-    "glob": "^7.1.7",
-    "ignore": "^5.1.8",
-    "object-assign": "^4.1.1"
-  },
-  "devDependencies": {
-    "eslint": "^7.27.0"
-  }
+    "name": "nmls",
+    "version": "3.0.2",
+    "description": "An analysis tool to Node Modules List",
+    "keywords": [
+        "nmls"
+    ],
+    "bin": {
+        "nmls": "./lib/bin.js"
+    },
+    "main": "./lib/index.js",
+    "files": [
+        "lib"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cenfun/nmls.git"
+    },
+    "dependencies": {
+        "commander": "^9.2.0",
+        "console-grid": "^1.0.17",
+        "eight-colors": "^1.0.1",
+        "gauge": "^4.0.4",
+        "glob": "^8.0.1",
+        "ignore": "^5.2.0",
+        "object-assign": "^4.1.1"
+    },
+    "devDependencies": {
+        "eslint": "^8.14.0"
+    }
 }
