@@ -2,6 +2,9 @@
 
 ---
 
+* 3.0.3
+    * updated deps
+
 * 3.0.2
     * fixed path error
 
