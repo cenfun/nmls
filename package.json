@@ -19,13 +19,13 @@
     "dependencies": {
         "commander": "^9.4.0",
         "console-grid": "^2.0.0",
-        "eight-colors": "^1.0.1",
+        "eight-colors": "^1.0.2",
         "gauge": "^4.0.4",
         "glob": "^8.0.3",
         "ignore": "^5.2.0"
     },
     "devDependencies": {
-        "eslint": "^8.22.0",
+        "eslint": "^8.23.0",
         "eslint-config-plus": "^1.0.3",
         "eslint-plugin-html": "^7.1.0"
     }
