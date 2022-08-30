@@ -2,6 +2,9 @@
 
 ---
 
+* 3.0.4
+    * supported optionalDependencies
+
 * 3.0.3
     * updated deps
 
