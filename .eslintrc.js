@@ -1,32 +1,28 @@
 // https://eslint.org/docs/rules/
 module.exports = {
-    "root": true,
+    'root': true,
     // system globals
-    "env": {
-        "node": true,
-        "browser": true,
-        "amd": true,
-        "commonjs": true,
-        "es6": true,
-        "mocha": true
+    'env': {
+        'node': true,
+        'browser': true,
+        'amd': true,
+        'commonjs': true,
+        'es6': true,
+        'mocha': true
     },
     // other globals
-    "globals": {},
+    'globals': {},
 
-    "plugins": [
-        "html"
+    'extends': [
+        'plus'
     ],
 
-    "extends": [
-        "plus"
-    ],
-
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
+    'parserOptions': {
+        'ecmaVersion': 'latest',
+        'sourceType': 'module'
     },
 
-    "rules": {
-        "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn"
+    'rules': {
+        'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn'
     }
 };

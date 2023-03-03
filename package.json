@@ -1,32 +1,30 @@
 {
     "name": "nmls",
-    "version": "3.0.4",
+    "version": "3.1.0",
     "description": "An analysis tool to Node Modules List",
-    "keywords": [
-        "nmls"
-    ],
+    "main": "./lib/index.js",
     "bin": {
         "nmls": "./lib/bin.js"
     },
-    "main": "./lib/index.js",
     "files": [
         "lib"
+    ],
+    "keywords": [
+        "nmls"
     ],
     "repository": {
         "type": "git",
         "url": "https://github.com/cenfun/nmls.git"
     },
     "dependencies": {
-        "commander": "^9.4.0",
-        "console-grid": "^2.0.0",
+        "commander": "^10.0.0",
+        "console-grid": "^2.0.1",
         "eight-colors": "^1.0.2",
-        "gauge": "^4.0.4",
-        "glob": "^8.0.3",
-        "ignore": "^5.2.0"
+        "gauge": "^5.0.0",
+        "ignore": "^5.2.4"
     },
     "devDependencies": {
-        "eslint": "^8.23.0",
-        "eslint-config-plus": "^1.0.3",
-        "eslint-plugin-html": "^7.1.0"
+        "eslint": "^8.35.0",
+        "eslint-config-plus": "^1.0.6"
     }
 }
