@@ -12,55 +12,52 @@ npm install nmls -g
 # go to project folder and execute:
 nmls
 
-# sort by dependency size
-nmls -s dSize
-nmls --sort dSize
-
 # more options help
 nmls -h
 nmls --help
- Usage: nmls [options]
-┌─────────────────────────────┬───────────────────────────────────────────────────────────────────┐
-│ Commands and Options        │ Description                                                       │
-├─────────────────────────────┼───────────────────────────────────────────────────────────────────┤
-│ └ nmls                      │                                                                   │
-│   ├  -v, --version          │ output the version number                                         │
-│   ├  -r, --root <path>      │ project root, default value is '.' (current working directory)    │
-│   ├  -s, --sort <field>     │ sort field (name/version/size/dAmount/dNested/dSize/files/dFiles) │
-│   ├  -a, --asc              │ sort by asc                                                       │
-│   ├  -f, --files            │ show files columns                                                │
-│   └  -h, --help             │ display help for command                                          │
-└─────────────────────────────┴───────────────────────────────────────────────────────────────────┘
+┌─────────────────────────┬─────────────────────────────────────────────────────────────┐
+│ Commands/Options        │ Description                                                 │
+├─────────────────────────┼─────────────────────────────────────────────────────────────┤
+│ ├ nmls                  │ An analysis tool to Node Modules List                       │
+│ │ ├  -v, --version      │ output the version number                                   │
+│ │ ├  -r, --root <path>  │ root path, default value is '.' (current working directory) │
+│ │ ├  -p, --prod         │ prod dependencies only (no devDependencies)                 │
+│ │ ├  -f, --files        │ show files info                                             │
+│ │ ├  -s, --sort <field> │ sort field (name/version/size/files/deps/dSize/nested)      │
+│ │ ├  -a, --asc          │ asc or desc (default)                                       │
+│ │ └  -h, --help         │ display help for command                                    │
+│ └ nmls [name]           │ specified module name to list                               │
+└─────────────────────────┴─────────────────────────────────────────────────────────────┘
 ```
 # Output Example
 ```
 nmls -f
-[nmls] root: G:/workspace/nmls
-[nmls] generated node modules: 135  (nested: 5  size percentage: 1.17 %)
-┌──────────────────────────┬─────────┬───────┬───────────┬──────────┬──────────┬──────────┬───────────┐
-│                          │         │       │           │     Deps │     Deps │     Deps │           │
-│  Name                    │ Version │ Files │      Size │   Amount │   Nested │    Files │ Deps Size │
-├──────────────────────────┼─────────┼───────┼───────────┼──────────┼──────────┼──────────┼───────────┤
-│ └ nmls                   │ 3.0.3   │    16 │  34.24 KB │      135 │        5 │    1,766 │  11.47 MB │
-│   ├ dependencies         │         │       │           │          │          │          │           │
-│   │ ├ commander          │ 9.4.0   │    13 │ 165.62 KB │        0 │        0 │        0 │       0 B │
-│   │ ├ console-grid       │ 2.0.0   │     5 │   35.1 KB │        0 │        0 │        0 │       0 B │
-│   │ ├ eight-colors       │ 1.0.1   │     3 │   3.08 KB │        0 │        0 │        0 │       0 B │
-│   │ ├ gauge              │ 4.0.4   │    18 │  42.15 KB │       11 │        0 │       57 │ 113.14 KB │
-│   │ ├ glob               │ 8.0.3   │     6 │   53.6 KB │        8 │        2 │       37 │  82.09 KB │
-│   │ └ ignore             │ 5.2.0   │     6 │  47.72 KB │        0 │        0 │        0 │       0 B │
-│   └ devDependencies      │         │       │           │          │          │          │           │
-│     ├ eslint             │ 8.22.0  │   397 │   2.67 MB │      110 │        3 │    1,016 │   6.99 MB │
-│     ├ eslint-config-plus │ 1.0.3   │     8 │  49.29 KB │        0 │        0 │        0 │       0 B │
-│     └ eslint-plugin-html │ 7.1.0   │    10 │   41.2 KB │        6 │        0 │      214 │   1.21 MB │
-└──────────────────────────┴─────────┴───────┴───────────┴──────────┴──────────┴──────────┴───────────┘
+[nmls] root: H:/workspace/nmls
+[nmls] node modules: 119  files: 1,674  size: 11.9 MB
+[nmls] nested: 4  files: 58  size: 339.4 KB (2.8%)
+┌──────────────────────────┬─────────┬───────┬──────────┬──────┬───────────┬────────┐
+│  Name                    │ Version │ Files │     Size │ Deps │ Deps Size │ Nested │
+├──────────────────────────┼─────────┼───────┼──────────┼──────┼───────────┼────────┤
+│ └ nmls                   │ 4.0.0   │     8 │  36.2 KB │  119 │   11.8 MB │      4 │
+│   ├ dependencies         │         │       │          │      │           │        │
+│   │ ├ commander          │ 10.0.0  │    13 │ 169.6 KB │    0 │       0 B │      0 │
+│   │ ├ commander-help     │ 1.0.0   │     4 │  9.37 KB │    2 │   50.7 KB │      0 │
+│   │ ├ console-grid       │ 2.0.1   │     6 │  36.9 KB │    0 │       0 B │      0 │
+│   │ ├ eight-colors       │ 1.0.2   │     6 │  13.8 KB │    0 │       0 B │      0 │
+│   │ ├ gauge              │ 5.0.0   │    18 │  42.1 KB │   11 │  113.1 KB │      0 │
+│   │ ├ glob               │ 9.2.1   │    65 │ 290.0 KB │    7 │  808.9 KB │      2 │
+│   │ └ ignore             │ 5.2.4   │     6 │  50.0 KB │    0 │       0 B │      0 │
+│   └ devDependencies      │         │       │          │      │           │        │
+│     ├ eslint             │ 8.35.0  │   400 │  2.73 MB │   97 │   7.61 MB │      2 │
+│     └ eslint-config-plus │ 1.0.6   │     9 │  50.5 KB │    0 │       0 B │      0 │
+└──────────────────────────┴─────────┴───────┴──────────┴──────┴───────────┴────────┘
 ```
 
 # Node.js API
 ```js
 const NMLS = require("nmls");
-const option = {};
-new NMLS().start(option).then((info) => {
+const options = {};
+new NMLS(options).start().then((info) => {
     console.log("[nmls] done");
 });
 ```

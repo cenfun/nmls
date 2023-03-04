@@ -1,5 +1,8 @@
 # Changelog
 
+* 4.0.0
+    * refactor
+
 ---
 
 * 3.0.4
@@ -17,6 +20,8 @@
 * 3.0.0
     * support workspace
     * removed useless --module option
+
+---
 
 * 2.0.3
     * fixed color
