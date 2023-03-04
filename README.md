@@ -16,13 +16,6 @@ nmls
 nmls -s dSize
 nmls --sort dSize
 
-# show workspace
-nmls -w
-nmls --workspace
-
-# filter workspace packages with name
-nmls -w my-workspace-name
-
 # more options help
 nmls -h
 nmls --help
@@ -35,7 +28,6 @@ nmls --help
 │   ├  -r, --root <path>      │ project root, default value is '.' (current working directory)    │
 │   ├  -s, --sort <field>     │ sort field (name/version/size/dAmount/dNested/dSize/files/dFiles) │
 │   ├  -a, --asc              │ sort by asc                                                       │
-│   ├  -w, --workspace [name] │ show all packages of workspace, or filter with name               │
 │   ├  -f, --files            │ show files columns                                                │
 │   └  -h, --help             │ display help for command                                          │
 └─────────────────────────────┴───────────────────────────────────────────────────────────────────┘

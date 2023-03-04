@@ -22,6 +22,7 @@
         "console-grid": "^2.0.1",
         "eight-colors": "^1.0.2",
         "gauge": "^5.0.0",
+        "glob": "^9.2.1",
         "ignore": "^5.2.4"
     },
     "devDependencies": {
