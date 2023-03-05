@@ -1,5 +1,8 @@
 # Changelog
 
+* 4.0.1
+    * fixed peerDependencies
+
 * 4.0.0
     * refactor
 
