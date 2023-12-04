@@ -1,5 +1,8 @@
 # Changelog
 
+* 4.0.2
+    * update dependencies
+
 * 4.0.1
     * fixed peerDependencies
 
