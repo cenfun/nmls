@@ -1,6 +1,6 @@
 {
     "name": "nmls",
-    "version": "4.0.2",
+    "version": "4.0.3",
     "description": "An analysis tool to Node Modules List",
     "main": "./lib/index.js",
     "bin": {
