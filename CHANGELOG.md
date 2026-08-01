@@ -1,5 +1,8 @@
 # Changelog
 
+* 4.0.4
+    * update dependencies
+
 * 4.0.3
     * update dependencies
 
